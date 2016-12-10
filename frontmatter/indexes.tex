@@ -1,0 +1,49 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = LuaLaTeX
+% !TEX root = ../memoire.tex
+% !TEX spellcheck = fr-FR
+
+%*******************************************************
+% Indexes
+%*******************************************************
+\cleardoublepage
+\pdfbookmark{\contentsname}{tableofcontents}
+\tableofcontents
+\markboth{\spacedlowsmallcaps{\contentsname}}{\spacedlowsmallcaps{\contentsname}}
+\clearpage
+
+\begingroup
+    \let\clearpage\relax
+    \let\cleardoublepage\relax
+    \let\cleardoublepage\relax
+
+    %*******************************************************
+    % List of figures
+    %*******************************************************
+    \phantomsection
+    \pdfbookmark{\listfigurename}{lof}
+    \listoffigures
+
+    \vspace*{8ex}
+
+    %*******************************************************
+    % List of tables
+    %*******************************************************
+    \phantomsection
+    \pdfbookmark{\listtablename}{lot}
+    \listoftables
+
+    \vspace*{8ex}
+
+    %*******************************************************
+    % List of listings
+    %*******************************************************
+    \phantomsection
+    \pdfbookmark{\listalgorithmname}{loa}
+    \listofalgorithms
+    \addtocontents{loa}{\def\string\figurename{Alg.}}
+    \vspace*{8ex}
+
+\endgroup
+
+\cleardoublepage

@@ -1,0 +1,214 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = LuaLaTeX
+% !TEX root = ../memoire.tex
+% !TEX spellcheck = fr-FR
+
+%*******************************************************
+% Declaration
+%*******************************************************
+\cleardoublepage
+\phantomsection
+\chapter{Preuves}
+
+\begin{proof}[Preuve du théorème~\ref{thrm:vc}, adaptée de \citet{Devroye1997}]\label{preuve:vc}
+    Soit $\mathcal{X} = \mathbb{R}^d$ et $\mathcal{Y} = \{0,1\}$. Ici $L(y,\varphi(\mathbf{x})) = \mathds{1}_{\varphi (\mathbf{x}) \neq y}$ et donc $\mathrm{Err} ( \varphi (X) ) = \mathbb{P} ( \varphi (X) \neq Y )$. Supposons que $N \varepsilon^2 > 2$ et introduisons $\mathcal{L}'$ un nouvel échantillon de $(\mathbf{x}'_i,y'_i)$ de taille $N$, indépendant de $\mathcal{L}$ et identiquement distribué. Soit
+    \begin{equation*}
+        \mathrm{Err}'_N ( \varphi ) = \frac{1}{N} \sum_{i=1}^N \mathds{1}_{\varphi( \mathbf{x}'_i ) \neq y'_i}
+    \end{equation*}
+    
+    Montrons d'abord que:
+    \begin{equation*}
+        \mathbb{P} \left( \sup_{\varphi \in \Phi} \vert \mathrm{Err}_N ( \varphi ) - \mathrm{Err} (\varphi) \vert > \varepsilon \right) \leq 2 \mathbb{P} \left( \sup_{\varphi \in \Phi} \vert \mathrm{Err}_N ( \varphi ) - \mathrm{Err}'_N (\varphi) \vert > \varepsilon/2 \right)
+    \end{equation*}
+    
+    Soit $\tilde{\varphi}$ tel que $\vert \mathrm{Err}_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert > \varepsilon$. C'est une fonction de $\mathcal{L}$, mais nous ne l'écrivons pas pour simplifier les notations.
+    
+    \begin{align*}
+        &\mathbb{P} \left( \sup_{\varphi \in \Phi} \vert \mathrm{Err}_N ( \varphi ) - \mathrm{Err}'_N (\varphi) \vert > \varepsilon/2 \right) \geq \mathbb{P} \left( \vert \mathrm{Err}_N ( \tilde{\varphi} ) - \mathrm{Err}'_N (\tilde{\varphi}) \vert > \varepsilon/2 \right) \\
+        &\geq \mathbb{P} \left( \vert \mathrm{Err}_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert > \varepsilon \text{ et } \vert \mathrm{Err}'_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert < \varepsilon/2 \right) \\
+        &\geq \mathbb{E} \left[ \mathds{1}_{\vert \mathrm{Err}_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert > \varepsilon} \mathds{1}_{\vert \mathrm{Err}'_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert < \varepsilon/2} \right] \\
+        &\geq \mathbb{E} \left[ \mathds{1}_{\vert \mathrm{Err}_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert > \varepsilon} \mathbb{E} \left[ \mathds{1}_{\vert \mathrm{Err}'_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert < \varepsilon/2} \mid \mathcal{L} \right] \right] \\
+        &\geq \mathbb{E} \left[ \mathds{1}_{\vert \mathrm{Err}_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert > \varepsilon} \mathbb{P} \left( \mathds{1}_{\vert \mathrm{Err}'_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert < \varepsilon/2} \mid \mathcal{L} \right) \right] \\
+    \end{align*}
+    
+    Notons alors
+    \begin{equation*}
+    U_i = \mathds{1}_{ \tilde{\varphi} (X'_i) \neq Y'_i } - \mathbb{E} \left[ \mathds{1}_{ \tilde{\varphi} (X'_i) \neq Y'_i } \mid \mathcal{L} \right]
+    \end{equation*}
+    qui sont des variables aléatoires centrées, indépendantes et identiquement distribuées.
+    Alors conditionnellement à $\mathcal{L}$:
+    \begin{equation*}
+        \mathrm{Err}'_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) = \frac{1}{N} \sum_{i=1}^N U_i
+    \end{equation*}
+    On a alors:
+    \begin{align*}
+        \mathbb{P} \left( \vert \mathrm{Err}'_N ( \tilde{\varphi} ) - \mathrm{Err} (\tilde{\varphi}) \vert < \varepsilon/2 \mid \mathcal{L} \right) &= \mathbb{P} \left( \left\vert \frac{1}{N} \sum_{i=1}^N U_i \right\vert < \frac{\varepsilon}{2} \mid \mathcal{L}  \right) \\
+        &= \mathbb{P} \left( \left\vert \sum_{i=1}^N U_i \right\vert < \frac{N \varepsilon}{2} \mid \mathcal{L}  \right) \\
+        \text{(Par l'inégalité de Chebyshev)} \qquad &\geq  1 - \frac{4}{n^2 \varepsilon^2} \mathbb{V} \left[ \left\vert \sum_{i=1}^N U_i \right\vert \mid \mathcal{L} \right] \\
+        \text{(Car il s'agit d'une variable binaire)} \qquad &\geq 1 - \frac{4}{n^2 \varepsilon^2} \frac{1}{4} \\
+        \text{(Car } N \varepsilon^2 \geq 2 \text{ )} \qquad  &\geq \frac{1}{2}
+    \end{align*}
+    
+    Donc
+    
+    \begin{align*}
+        &\mathbb{P} \left( \sup_{\varphi \in \Phi} \left\vert \mathrm{Err}_N (\varphi) - \mathrm{Err}'_N (\varphi) \right\vert > \frac{\varepsilon}{2} \right) \\
+        &\geq \mathbb{E} \left[ \mathds{1}_{ \left\vert \mathrm{Err}_N (\tilde{\varphi}) - \mathrm{Err} (\tilde{\varphi}) \right\vert > \varepsilon } \mathbb{P} \left( \left\vert \mathrm{Err}'_N (\tilde{\varphi}) - \mathrm{Err} (\tilde{\varphi}) \right\vert < \frac{\varepsilon}{2} \mid \mathcal{L} \right) \right] \\
+        &\geq \frac{1}{2} \mathbb{E} \left[ \mathds{1}_{ \left\vert \mathrm{Err}_N (\tilde{\varphi}) - \mathrm{Err} (\tilde{\varphi}) \right\vert > \varepsilon } \right] \\
+        &\geq \frac{1}{2} \mathbb{P} \left( \left\vert \mathrm{Err}_N (\tilde{\varphi}) - \mathrm{Err} (\tilde{\varphi}) \right\vert > \varepsilon \right) \\
+        &\geq \frac{1}{2} \mathbb{P} \left( \sup_{\varphi \in \Phi} \left\vert \mathrm{Err}_N (\varphi) - \mathrm{Err} (\varphi) \right\vert > \varepsilon \right) \\
+    \end{align*}
+    
+    On va maintenant procéder à une seconde symétrisation par un processus de Rademacher. On peut effet écrire:
+    \begin{equation*}
+        \mathbb{P} \left( \sup_{\varphi \in \Phi} \left\vert \mathrm{Err}_N (\varphi) - \mathrm{Err}'_N (\varphi) \right\vert > \frac{\varepsilon}{2} \right) = \mathbb{P} \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N ( \mathds{1}_{\varphi (X_i) \neq Y_i} - \mathds{1}_{\varphi (X'_i) \neq Y'_i} )  \right\vert > \frac{\varepsilon}{2}\right)
+    \end{equation*}
+    Par construction $\mathds{1}_{\varphi (X_i) \neq Y_i} - \mathds{1}_{\varphi (X'_i) \neq Y'_i}$ est de moyenne nulle et symétrique. Introduisons $\sigma_1,\cdots,\sigma_N$ variables aléatoires i.i.d indépendantes de $\mathcal{L}$ et $\mathcal{L}'$ telles que $\mathbb{P} (\sigma_i = 1) = \mathbb{P} (\sigma_i = -1) = 1/2$.
+    
+    \begin{align*}
+        &\mathbb{P} \left( \sup_{\varphi \in \Phi} \left\vert \mathrm{Err}_N (\varphi) - \mathrm{Err}'_N (\varphi) \right\vert > \frac{\varepsilon}{2} \right) \\
+        &= \mathbb{P} \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N ( \mathds{1}_{\varphi (X_i) \neq Y_i} - \mathds{1}_{\varphi (X'_i) \neq Y'_i} )  \right\vert > \frac{\varepsilon}{2}\right) \\
+        &= \mathbb{P} \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i ( \mathds{1}_{\varphi (X_i) \neq Y_i} - \mathds{1}_{\varphi (X'_i) \neq Y'_i} )  \right\vert > \frac{\varepsilon}{2}\right) \\
+        &\leq \mathbb{P} \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i ( \mathds{1}_{\varphi (X_i) \neq Y_i} - \mathds{1}_{\varphi (X'_i) \neq Y'_i} )  \right\vert > \frac{\varepsilon}{2}\right) \\
+        &\leq \mathbb{P} \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \left\vert \sum_{i=1}^N \sigma_i  \mathds{1}_{\varphi (X_i) \neq Y_i} \right\vert - \left\vert \sum_{i=1}^N \mathds{1}_{\varphi (X'_i) \neq Y'_i} \right\vert  \right\vert > \frac{\varepsilon}{2}\right) \\
+        &\leq \mathbb{P} \Bigg( \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (X_i) \neq Y_i} \right\vert > \frac{\varepsilon}{2} \text{ et } \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (X'_i) \neq Y'_i} \right\vert > \frac{\varepsilon}{4} \right) \\
+        &\text{ ou } \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (X_i) \neq Y_i} \right\vert > \frac{\varepsilon}{4} \text{ et } \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (X'_i) \neq Y'_i} \right\vert > \frac{\varepsilon}{2} \right) \Bigg)\\
+        &\leq \mathbb{P} \Bigg( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (X'_i) \neq Y'_i} \right\vert > \frac{\varepsilon}{4} \text{ ou } \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (X_i) \neq Y_i} \right\vert > \frac{\varepsilon}{4} \Bigg)\\
+        &\leq 2 \mathbb{P} \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (X'_i) \neq Y'_i} \right\vert > \frac{\varepsilon}{4} \right)
+    \end{align*}
+    On a donc
+    \begin{equation*}
+        \mathbb{P} \left( \sup_{\varphi \in \Phi} \left\vert \mathrm{Err}_N (\varphi) - \mathrm{Err} (\varphi) \right\vert > \varepsilon \right) \leq 4 \mathbb{P} \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (X'_i) \neq Y'_i} \right\vert > \frac{\varepsilon}{4} \right)
+    \end{equation*}
+    
+    On va maintenant conditionner sur $\mathcal{L}$ pour faire apparaître la dimension de $\Phi$ par rapport à $\mathcal{L}$. Soit $\Phi_{\mathcal{L}}$ la plus petite partie de $\Phi$ telle que
+    \begin{equation*}
+        N(\Phi,\mathcal{L}) = N(\Phi_{\mathcal{L}},\mathcal{L})
+    \end{equation*}
+    On a alors $N(\Phi_{\mathcal{L}},\mathcal{L}) \leq G(\Phi,\mathcal{L})$.
+    \begin{align*}
+        &\mathbb{P} \left( \sup_{\varphi \in \Phi} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i } \right\vert > \frac{\varepsilon}{4} \right) \\
+        &= \mathbb{P} \left( \max_{\varphi \in \Phi_{\mathcal{L}}} \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i } \right\vert > \frac{\varepsilon}{4} \right) \\
+        &= \mathbb{P} \left( \bigcup_{\varphi \in \Phi_{\mathcal{L}}} \left\{ \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i } \right\vert > \frac{\varepsilon}{4} \right\} \right) \\
+        &\leq \sum_{\varphi \in \Phi_{\mathcal{L}}} \mathbb{P} \left( \left\{ \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i } \right\vert > \frac{\varepsilon}{4} \right\} \right) \\
+        &\leq \vert \Phi_{\mathcal{L}} \vert \sup_{\varphi \in \Phi_{\mathcal{L}}} \mathbb{P} \left( \left\{ \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i } \right\vert > \frac{\varepsilon}{4} \right\} \right) \\
+        &\leq G(\Phi,N) \sup_{\varphi \in \Phi_{\mathcal{L}}} \mathbb{P} \left( \left\{ \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i } \right\vert > \frac{\varepsilon}{4} \right\} \right) \\
+        &\leq G(\Phi,N) \sup_{\varphi \in \Phi} \mathbb{P} \left( \left\{ \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i } \right\vert > \frac{\varepsilon}{4} \right\} \right)
+    \end{align*}
+    On peut enfin conclure par l'utilisation d'une inégalité de concentration. En notant que les $Z_i = \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i }$ sont des variables aléatoires centrées, i.i.d et bornées par $-1$ et $1$ on a
+    \begin{align*}
+        \mathbb{P} \left( \left\{ \frac{1}{N} \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i } \right\vert > \frac{\varepsilon}{4} \right\} \right) &\leq \mathbb{P} \left( \left\{ \left\vert \sum_{i=1}^N \sigma_i \mathds{1}_{\varphi (\mathbf{x}_i) \neq y_i } \right\vert > \frac{N \varepsilon}{4} \right\} \right) \\
+        \text{(Inégalité de Hoeffding)} \qquad &\leq 2 e^{- 2 \frac{\left(N \varepsilon / 4\right)^2}{\sum_{i=1}^N \left(1- \left(-1\right)\right)^2}} \\
+        &\leq 2 e^{-\frac{N \varepsilon^2}{32}}
+    \end{align*}
+\end{proof}
+
+\begin{proof}[Preuve de~\ref{equ:var.beta}]
+    On suppose que $y = x\beta + \varepsilon$, avec $\mathbb{E} [\varepsilon] = 0$ et $\mathbb{V} [\varepsilon] = \sigma^2 \mathds{I}$. Alors:
+    \begin{align*}
+        \mathbb{V} \left[ \hat{\beta} \right] &= \mathbb{E} \left[ \hat{\beta} \hat{\beta}^\intercal \right] - \mathbb{E} \left[ \hat{\beta} \right] \mathbb{E} \left[ \hat{\beta}^\intercal \right] \\
+        &= \mathbb{E} \left[ \left( (x^\intercal x)^{-1} x^\intercal y \right) \left( (x^\intercal x)^{-1} x^\intercal y \right)^\intercal \right] - \beta \beta^\intercal \\
+        &= \mathbb{E} \left[ \left( (x^\intercal x)^{-1} x^\intercal ( x \beta + \varepsilon ) \right) \left( (x^\intercal x)^{-1} x^\intercal ( x \beta + \varepsilon ) \right)^\intercal \right] - \beta \beta^\intercal \\
+        &= \beta \beta^\intercal + \mathbb{E} \left[ \beta \left( (x^\intercal x)^{-1} x^\intercal \varepsilon \right)^\intercal \right] + \mathbb{E} \left[ \left( (x^\intercal x)^{-1} x^\intercal \varepsilon \right) \beta^\intercal \right] \\
+        &+ \mathbb{E} \left[ \left( (x^\intercal x)^{-1} x^\intercal \varepsilon \right) \left( (x^\intercal x)^{-1} x^\intercal \varepsilon \right)^\intercal \right] - \beta \beta^\intercal \\
+        &= \beta \underbrace{\mathbb{E} \left[ \varepsilon^\intercal \right]}_0 \left( (x^\intercal x)^{-1} x^\intercal \right)^\intercal + \left( (x^\intercal x)^{-1} x^\intercal  \right) \underbrace{ \mathbb{E} \left[ \varepsilon \right] }_0 \beta^\intercal \\
+        &+  (x^\intercal x)^{-1} x^\intercal \mathbb{E} \underbrace{\left[\varepsilon \varepsilon^\intercal \right]}_{ \sigma^2 \mathds{I} } \left( x (x^\intercal x)^{-1} \right) \\
+        &= \left( x^\intercal x \right)^{-1} \sigma^2
+    \end{align*}
+\end{proof}
+
+\begin{proof}[Théorème~\label{cybenko} d'approximation universelle de \citet{Cybenko}]
+    Nous allons tout d'abord montrer que les fonctions $G$ du type
+    \begin{equation*}
+        G(x) = \sum_{j=1}^N \alpha_j \sigma ( y^\intercal_j x + \theta_j )
+    \end{equation*}
+    avec $\sigma$ discriminante, c'est-à-dire tel que pour tout $\mu \in \mathcal{M} ( I_M)$ mesure de Borel sur $I_M$ on a:
+    \begin{equation*}
+        \int_{I_M} \sigma ( y^\intercal_j x + \theta_j ) \diff \mu (x) = 0, \forall y \in \mathbb{R}^M, \theta \in \mathbb{R} \implies \mu = 0
+    \end{equation*}
+    sont denses dans $\mathcal{C} (I_M)$.
+    
+    Soit
+    \begin{equation*}
+        S = \mathrm{vect} \left\{ \sigma ( y^\intercal_j x + \theta_j ) , \sigma \text{ discriminante} \right\}
+    \end{equation*}
+    Il faut alors montrer que $\bar{S} = \mathcal{C} (I_M)$. Supposons alors par l'absurde que $\bar{S} \neq \mathcal{C} (I_M)$, alors $\bar{S}$ strictement inclue dans $\mathcal{C} (I_M)$ et par le théorème de Hahn-Banach (voir \citet{Brezis2011} par exemple) il existe une application linéaire $L$ bornée, sur $\mathcal{C} (I_M)$ telle que $L \neq 0$ et $L(S) = L(\bar{S}) = 0$.
+    Par le théorème de représentation de Riesz, on a:
+    \begin{equation*}
+        L(h) = \int_{I_M} h(x) g(x) \diff x = \int_{I_M} h(x) \diff \mu(x) 
+    \end{equation*}
+    pour un certain $g$ et donc $\mu$.
+    En particulier on a:
+    \begin{equation*}
+        \int_{I_M} \sigma (y^\intercal x + \theta) \diff \mu(x) = 0 , \forall y,\theta
+    \end{equation*}
+    Et comme $\sigma$ supposée discriminante on a $\mu = 0$, donc $L = 0$ ce qui est impossible. 
+    On a alors montré que $\bar{S} = \mathcal{C} (I_M)$.
+    
+    Reste alors à montrer que toute fonction \emph{sigmoïdale}, mesurable, bornée, est discriminante.
+    On appelle ici fonction \emph{sigmoïdale} la classe très large des fonctions $\sigma$ du type:
+    \begin{equation*}
+    \sigma(t) \to \begin{cases}
+        1 \text{ quand } t \to +\infty \\
+        0 \text{ quand } t \to -\infty
+    \end{cases}
+    \end{equation*}
+    
+    Posons $\sigma_\lambda = \sigma(\lambda ( y^\intercal x +\theta ) + \varphi)$.
+    
+    \begin{equation*}
+        \sigma(\lambda ( y^\intercal x +\theta ) + \varphi) \xrightarrow[\lambda \to \infty]{} \begin{cases}
+            1 \text{ lorsque } y^\intercal x +\theta > 0 \\
+            0 \text{ lorsque } y^\intercal x +\theta < 0 \\
+            \sigma (\varphi) \text{ lorsque } y^\intercal x +\theta = 0
+        \end{cases}
+    \end{equation*}
+    
+    $(\sigma_\lambda)$ converge simplement vers
+    \begin{equation*}
+        x \rightarrow \mathds{1}_{y^\intercal x + \theta > 0} + \sigma (\varphi) \delta_{y^\intercal x + \theta = 0}
+    \end{equation*}
+    De plus $(\sigma_\lambda)$ est dominée puisque $\sigma$ bornée, donc par le théorème de convergence dominée de Lebesgue on a:
+    \begin{align*}
+        0 &= \lim_{\lambda \to +\infty} \int_{I_M} \sigma_\lambda (x) \diff \mu (x) \qquad \text{ car } \sigma \text{ discriminante}\\
+        &= \int_{I_M} \lim_{\lambda \to +\infty} \sigma_\lambda (x) \diff \mu (x) \\
+        &= \int_{I_M} \left( \mathds{1}_{y^\intercal x + \theta > 0}(x) + \sigma (\varphi) \delta_{y^\intercal x + \theta = 0}(x) \right) \diff \mu (x) \\
+        &= \sigma(\varphi) \mu(\Pi_{y,\theta}) + \mu (H_{y,\theta}) , \forall \varphi, \theta, y
+    \end{align*}
+    avec
+    \begin{gather*}
+        \Pi_{y,\theta} = \{ x \mid y^\intercal x + \theta = 0 \} \\
+        H_{y,\theta} = \{ x \mid y^\intercal x + \theta > 0 \}
+    \end{gather*}
+    En faisant tendre $\varphi$ vers $+\infty$ on a alors:
+    \begin{equation*}
+        \mu(\Pi_{y,\theta}) + \mu (H_{y,\theta}) = 0 \qquad \forall \theta, y
+    \end{equation*}
+    et avec $\varphi \to -\infty$
+    \begin{equation*}
+        \mu (H_{y,\theta}) = 0 \qquad \forall \theta, y
+    \end{equation*}
+    Il faut maintenant montrer que cette condition implique $\mu = 0$, il faut en effet se rappeler que ici $\mu$ est une mesure signée. Introduisons, pour $y$ fixé, l'application linéaire $F$ bornée sur $L^\infty (\mathbb{R})$:
+    \begin{equation*}
+        F(h) = \int_{I_M} h(y^\intercal x) \diff \mu (x)
+    \end{equation*}
+    On a alors
+    \begin{align*}
+        F(\mathds{1}_{[\theta,\infty[}) &= \int_{I_M} \mathds{1}_{[\theta,\infty[} (x) \diff \mu (x) = \mu(\Pi_{y,-\theta}) + \mu (H_{y,-\theta}) \\
+        &= 0 \\
+        F(\mathds{1}_{]\theta,\infty[}) &= \int_{I_M} \mathds{1}_{[\theta,\infty[} (x) \diff \mu (x) = \mu (H_{y,-\theta}) \\
+        &= 0
+    \end{align*}
+    Puisque $F$ est linéaire, on a alors $F(h) = 0$ pour tout $h$ indicatrice d'un intervalle et donc $F(h) = 0$ pour toute fonction simple. Par densité des fonctions simples dans $L^\infty (\mathbb{R})$ on a alors $F = 0$.
+    Posons:
+    \begin{equation*}
+        h(x) = \cos (x) + i \sin (x) \in L^\infty (\mathbb{R})
+    \end{equation*}
+    On a alors:
+    \begin{equation*}
+        F(h) = \int_{I_M} \exp( i y^\intercal x ) \diff \mu (x) = 0
+    \end{equation*}
+    La transformée de Fourrier de $\mu$ est alors $0$ donc $\mu = 0$.
+    
+    On a donc bien prouvé que $\sigma$ est discriminant, et donc $S$ est dense dans $\mathcal{C} (I_M)$.
+\end{proof}

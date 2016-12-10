@@ -1,0 +1,497 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = LuaLaTeX
+% !TEX root = memoire.tex
+% !TEX spellcheck = fr-FR
+
+%*********************************************************************************
+% Preamble
+%*********************************************************************************
+
+%*********************************************************************************
+% TOC settings
+%*********************************************************************************
+% \setcounter{secnumdepth}{5}
+% \setcounter{tocdepth}{5}
+
+%*********************************************************************************
+% Chapters style
+%*********************************************************************************
+% Chapter number style: decomment if you want it with the same corpus font
+% \renewcommand{\chapterNumber}{%
+% \fontsize{70}{70}\usefont{\encodingdefault}{\sfdefault}{b}{n}%
+% }%
+
+% Workaround: multi-line titles
+\renewcommand\formatchapter[1]{%
+\begin{minipage}[b]{0.15\linewidth}
+\chapterNumber
+\end{minipage}%
+\begin{minipage}[b]{0.70\linewidth}%length of the second row
+\raggedright\spacedallcaps{#1}
+\end{minipage}
+}
+
+%*********************************************************************************
+% Analytical index
+%*********************************************************************************
+\makeindex
+
+% Balance columns of the last page
+% \let\orgtheindex\theindex
+% \let\orgendtheindex\endtheindex
+% \def\theindex{%
+% \def\twocolumn{\begin{multicols}{2}}%
+% \def\onecolumn{}%
+% \clearpage
+% \orgtheindex
+% }
+% \def\endtheindex{%
+% \end{multicols}%
+% \orgendtheindex
+% }
+
+% Indexing commands
+\newcommand*{\keyword}[2][]{#2\index{#2@#2#1}}% as simple keyword
+\newcommand{\keywordsub}[2][]{#2\index{#1!#2}}% as categorized keyword
+\newcommand{\keywordpagb}[1]{\keyword[|textbf]{#1}}% as simple keyword with bold page number
+\newcommand{\keywordpagi}[1]{\keyword[|textit]{#1}}% as simple keyword with italic page number
+\newcommand{\keywordbold}[1]{#1\index{#1@\textbf{#1}}}% as bold keyword
+\newcommand{\keyworditalic}[1]{#1\index{#1@\textsl{#1}}}% as italic keyword
+
+%*********************************************************************************
+% Impostazioni di amsmath, amssymb, amsthm
+%*********************************************************************************
+% Force the equation numbers to be always the same size
+\makeatletter
+\renewcommand{\maketag@@@}[1]{\hbox{\m@th\normalsize\normalfont#1}}%
+
+\renewcommand{\ALG@name}{Algorithme} %% Algorithmes en Fr
+\renewcommand*{\listalgorithmname}{Algorithmes}
+
+\makeatother
+
+% operators
+
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\conv}{\operatorname{conv}}
+\newcommand{\vect}{\operatorname{vect}}
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+\newcommand{\Var}{\mathrm{Var}}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\card}{card}
+
+% comandi per gli insiemi numerici (serve il pacchetto amssymb)
+\newcommand{\numberset}{\mathbb}
+\newcommand{\N}{\numberset{N}}
+\newcommand{\R}{\numberset{R}}
+
+% comandi per gli insiemi
+\newcommand{\set}[1]{\mathbf{#1}}
+\newcommand{\setel}[1]{\mathnormal{#1}}  % o \mathrm o \mathit
+
+% comandi per i vettori
+%\newcommand{\vect}[1]{\set{#1}}
+\newcommand{\vectel}[1]{\mathrm{#1}}
+
+% comandi per i simboli matematici che denotano schemi, categorie, concetti
+\newcommand{\conceptsym}[1]{\mathcal{#1}}
+
+
+% reference for equation terms. use \underbrace{equation}_{\myterm{termA}}
+\newcounter{term}
+\renewcommand*{\theterm}{(\alph{term})}
+\AtBeginDocument{%
+  \let\mylabel\label
+}
+\newcommand{\myterm}[1]{%
+  \begingroup % keep the effects of \refstepcounter local
+    \refstepcounter{term}%
+    \mylabel{#1}%
+    \text{\theterm}%
+  \endgroup
+}
+
+%*********************************************************************************
+% Nuovi ambienti: definizioni, teoremi etc. etc.
+%*********************************************************************************
+% definizioni (serve il pacchetto amsthm)
+\newtheoremstyle{classicdef}% Nome
+{12pt}% Spazio che precede lenunciato
+{12pt}% Spazio che segue lenunciato
+{}% Stile del font dellenunciato
+{}% Rientro (se vuoto, non cè rientro,
+% \parindent = rientro dei capoversi)
+{\scshape}% Stile del font dellintestazione
+{:}% Punteggiatura che segue lintestazione
+{.5em}% Spazio che segue lintestazione:
+% " " = normale spazio inter-parola;
+% \newline = a capo
+{}% Specifica lintestazione dellenunciato
+% (normalmente viene lasciata vuota)
+
+\newenvironment{hproof}{%
+  \renewcommand{\proofname}{Idée de preuve}\proof}{\endproof}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{observation}{Observation}[definition]
+
+% esempi
+\theoremstyle{definition}
+\newtheorem{exemple}{Exemple}[definition]
+
+% note about definitions
+\theoremstyle{remark}
+\newtheorem{notabene}{Note}[definition]
+
+% note of section
+\theoremstyle{remark}
+\newtheorem{note}{Note}[section]
+
+% teoremi (serve il pacchetto amsthm)
+\newtheoremstyle{classicthm}% Nome
+{12pt}% Spazio che precede lenunciato
+{12pt}% Spazio che segue lenunciato
+{\itshape}% Stile del font dellenunciato
+{}% Rientro (se vuoto, non cè rientro,
+% \parindent = rientro dei capoversi)
+{\scshape}% Stile del font dellintestazione
+{:}% Punteggiatura che segue lintestazione
+{.5em}% Spazio che segue lintestazione:
+% " " = normale spazio inter-parola;
+% \newline = a capo
+{}% Specifica lintestazione dellenunciato
+% (normalmente viene lasciata vuota)
+
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}[chapter]
+\newtheorem*{theoreme*}{Théorème}
+\newtheorem{cor}[theoreme]{Corollaire}
+\newtheorem{lem}[theoreme]{Lemme}
+\newtheorem{prop}[theoreme]{Proposition}
+\newtheorem{oss}[theoreme]{Observation}
+
+%*********************************************************************************
+% Impostazioni di acronym
+%*********************************************************************************
+\newcommand{\acroname}{Acronyme}
+% \renewcommand*{\acsfont}[1]{\textssc{#1}}                 % for MinionPro
+\renewcommand*{\acsfont}[1]{\textsmaller{#1}}               % customize font for long version acronyms [works only if footnote not activate]
+\renewcommand*{\acffont}[1]{#1}                             % idem, but for short version of acronyms
+\newcommand{\bflabel}[1]{{#1}\hfill}                      % fix the list of acronyms
+\makeatletter                                               % macro that tweeks acronym package to rendere lowercase or not
+\newif\if@in@acrolist
+\AtBeginEnvironment{acronym}{\@in@acrolisttrue}
+\newrobustcmd{\ul}[2]{\if@in@acrolist#1\else#2\fi}          % \ul{C}{c}iao defines an uppercase and lowercase variant of the same acronym
+\newcommand{\ACF}[1]{{\@in@acrolisttrue\acf{#1}}}           % \ACF{<acronym>} force the defined capitalized variants of acronym letters/words
+\newcommand{\ACL}[1]{{\@in@acrolisttrue\acl{#1}}}           % \ACL{<acronym}
+\makeatother
+
+%*********************************************************************************
+% Impostazioni di biblatex
+%*********************************************************************************
+\defbibheading{bibliography}{%
+\cleardoublepage
+\manualmark
+\phantomsection
+\addcontentsline{toc}{chapter}{\tocEntry{\bibname}}
+\chapter*{\bibname\markboth{\spacedlowsmallcaps{\bibname}}
+{\spacedlowsmallcaps{\bibname}}}}
+
+
+%*********************************************************************************
+% Impostazioni di hyperref
+%*********************************************************************************
+\hypersetup{%
+    pdfencoding=auto,
+    % hyperfootnotes=false,pdfpagelabels,
+    %draft,	% = elimina tutti i link (utile per stampe in bianco e nero)
+    colorlinks=true, linktocpage=true, pdfstartpage=1, pdfstartview=FitV,%
+    % decommenta la riga seguente per avere link in nero (per esempio per la stampa in bianco e nero)
+    % colorlinks=false, linktocpage=false, pdfborder={0 0 0}, pdfstartpage=1, pdfstartview=FitV,%
+    breaklinks=true, pdfpagemode=UseNone, pageanchor=true, pdfpagemode=UseOutlines,%
+    plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,%
+    hypertexnames=true, pdfhighlight=/O,%nesting=true,%frenchlinks,%
+    urlcolor=webbrown, linkcolor=RoyalBlue, citecolor=webgreen, %pagecolor=RoyalBlue,%
+    %urlcolor=Black, linkcolor=Black, citecolor=Black, %pagecolor=Black,%
+    pdftitle={\mytitle},%
+    pdfauthor={\textcopyright\ \myname, \myuni, \myfaculty},%
+    pdfsubject={\mysubject},%
+    pdfkeywords={\mykeywords},%
+    pdfcreator={LuaLaTeX},%
+    pdfproducer={LaTeX with hyperref, classicthesis and arsclassica}%
+}
+
+%*********************************************************************************
+% Impostazioni di graphicx
+%*********************************************************************************
+\graphicspath{{images/}} % cartella dove sono riposte le immagini
+
+%*********************************************************************************
+% A4 optimized margins
+%*********************************************************************************
+%\areaset[current]{336pt}{750pt}
+%\setlength{\marginparwidth}{7em}
+%\setlength{\marginparsep}{2em}%
+
+%*********************************************************************************
+% Utilities
+%*********************************************************************************
+% make first letter uppercase
+\makeatletter
+\def\upcase{\expandafter\makeupcase}
+\def\makeupcase#1{\uppercase{#1}}
+\makeatother
+
+% make first letter lowercase
+\makeatletter
+\def\lwcase{\expandafter\makelwcase}
+\def\makelwcase#1{\lowercase{#1}}
+\makeatother
+
+%*********************************************************************************
+% References
+%*********************************************************************************
+\providecommand*{\lstlistingautorefname}{algorithme}
+\providecommand*{\lstnumberautorefname}{ligne}
+
+%*********************************************************************************
+% Custom references for \autoref
+%*********************************************************************************
+\newcommand{\definitionautorefname}{définition}
+\newcommand{\observationautorefname}{observation}
+\newcommand{\noteautorefname}{note}
+\newcommand{\exempleautorefname}{exemple}
+\newcommand{\theoreautorefname}{théorème}
+
+%*********************************************************************************
+% Set footnote's continuos numbering and linking capabilities (using cleveref and chngcntr packages)
+%*********************************************************************************
+\counterwithout{footnote}{chapter}
+\crefformat{footnote}{#2\footnotemark[#1]#3}
+
+%*********************************************************************************
+% Translations for package algorithmicx
+%*********************************************************************************
+\renewcommand{\algorithmicend}{\textbf{fin}}
+\renewcommand{\algorithmicdo}{\textbf{faire}}
+\renewcommand{\algorithmicwhile}{\textbf{tant que}}
+\renewcommand{\algorithmicfor}{\textbf{pour}}
+\renewcommand{\algorithmicreturn}{\textbf{renvoyer}}
+\renewcommand{\algorithmicif}{\textbf{si}}
+\renewcommand{\algorithmicthen}{\textbf{alors}}
+\renewcommand{\algorithmicelse}{\textbf{sinon}}
+
+
+%*********************************************************************************
+% Define your commands here
+%*********************************************************************************
+% ...
+\newcommand{\ellipse}{\dots\negthinspace}
+\newcommand{\doublequotes}[1]{``#1''}
+\newcommand{\ie}{i.\,e.}
+\newcommand{\Ie}{I.\,e.}
+\newcommand{\eg}{e.\,g.}
+\newcommand{\Eg}{E.\,g.}
+
+%*********************************************************************************
+% Hypenation exceptions
+%*********************************************************************************
+%\hyphenation{Fortran ma-cro-istru-zio-ne nitro-idrossil-amminico}
+
+%*********************************************************************************
+% Cuboides tikz
+%*********************************************************************************
+\makeatletter
+\def\tikz@lib@cuboid@get#1{\pgfkeysvalueof{/tikz/cuboid/#1}}
+
+\def\tikz@lib@cuboid@setup{%
+   \pgfmathsetlengthmacro{\vxx}%
+      {\tikz@lib@cuboid@get{xscale}*cos(\tikz@lib@cuboid@get{xangle})*1cm}
+   \pgfmathsetlengthmacro{\vxy}%
+      {\tikz@lib@cuboid@get{xscale}*sin(\tikz@lib@cuboid@get{xangle})*1cm}
+   \pgfmathsetlengthmacro{\vyx}%
+      {\tikz@lib@cuboid@get{yscale}*cos(\tikz@lib@cuboid@get{yangle})*1cm}
+   \pgfmathsetlengthmacro{\vyy}%
+      {\tikz@lib@cuboid@get{yscale}*sin(\tikz@lib@cuboid@get{yangle})*1cm}
+   \pgfmathsetlengthmacro{\vzx}%
+      {\tikz@lib@cuboid@get{zscale}*cos(\tikz@lib@cuboid@get{zangle})*1cm}
+   \pgfmathsetlengthmacro{\vzy}%
+      {\tikz@lib@cuboid@get{zscale}*sin(\tikz@lib@cuboid@get{zangle})*1cm}
+}
+
+\def\tikz@lib@cuboid@draw#1--#2--#3\pgf@stop{%
+    \begin{scope}[join=bevel,x={(\vxx,\vxy)},y={(\vyx,\vyy)},z={(\vzx,\vzy)}]
+       % first fill the faces with global and individual style
+       % then draw the grids
+       \begin{scope}[canvas is yz plane at x=#1]
+          \draw[cuboid/all faces,cuboid/edges,cuboid/right face] 
+                (0,0) -- ++(#2,0) -- ++(0,-#3) -- ++(-#2,0) -- cycle;
+          \draw[cuboid/all grids,cuboid/right grid] (0,0) grid (#2,-#3);
+       \end{scope}
+       \begin{scope}[canvas is xy plane at z=0]
+          \draw[cuboid/all faces,cuboid/edges,cuboid/front face] 
+                (0,0) -- ++(#1,0) --  ++(0,#2) -- ++(-#1,0) -- cycle;
+          \draw[cuboid/all grids,cuboid/front grid] (0,0) grid (#1,#2);
+       \end{scope}
+       \begin{scope}[canvas is xz plane at y=#2]
+          \draw[cuboid/all faces,cuboid/edges,cuboid/top face] 
+                (0,0) -- ++(#1,0) --  ++(0,-#3) -- ++(-#1,0) -- cycle;
+          \draw[cuboid/all grids,cuboid/top grid] (0,0) grid (#1,-#3);
+       \end{scope}
+       % now, draw the hidden edges
+       \draw[cuboid/hidden edges] (0,#2,-#3) -- (0,0,-#3) -- (0,0,0) 
+                (0,0,-#3) -- ++(#1,0,0);
+       % finally, draw the visible edges 
+       \begin{scope}[canvas is yz plane at x=#1]
+          \draw[cuboid/all faces,cuboid/right face,cuboid/edges,fill opacity=0] 
+                (0,0) -- ++(#2,0) -- ++(0,-#3) -- ++(-#2,0) -- cycle;
+       \end{scope}
+       \begin{scope}[canvas is xy plane at z=0]
+          \draw[cuboid/all faces,cuboid/front face,cuboid/edges,fill opacity=0] 
+                (0,0) -- ++(#1,0) --  ++(0,#2) -- ++(-#1,0) -- cycle;
+       \end{scope}
+       \begin{scope}[canvas is xz plane at y=#2]
+          \draw[cuboid/all faces,cuboid/top face,cuboid/edges,fill opacity=0] 
+                (0,0) -- ++(#1,0) --  ++(0,-#3) -- ++(-#1,0) -- cycle;
+       \end{scope}
+       % define the anchors: 8 vertices
+       \path (0,#2,0) coordinate (-left top front)
+                      coordinate (-left front top)
+                      coordinate (-top left front)
+                      coordinate (-top front left)
+                      coordinate (-front top left)
+                      coordinate (-front left top);
+       \path (0,#2,-#3) coordinate (-left top rear)
+                        coordinate (-left rear top)
+                        coordinate (-top left rear)
+                        coordinate (-top rear left)
+                        coordinate (-rear top left)
+                        coordinate (-rear left top);
+       \path (0,0,-#3) coordinate (-left bottom rear)
+                       coordinate (-left rear bottom)
+                       coordinate (-bottom left rear)
+                       coordinate (-bottom rear left)
+                       coordinate (-rear bottom left)
+                       coordinate (-rear left bottom);
+       \path (0,0,0) coordinate (-left bottom front)
+                     coordinate (-left front bottom)
+                     coordinate (-bottom left front)
+                     coordinate (-bottom front left)
+                     coordinate (-front bottom left)
+                     coordinate (-front left bottom);
+       \path (#1,#2,0) coordinate (-right top front)
+                       coordinate (-right front top)
+                       coordinate (-top right front)
+                       coordinate (-top front right)
+                       coordinate (-front top right)
+                       coordinate (-front right top);
+       \path (#1,#2,-#3) coordinate (-right top rear)
+                         coordinate (-right rear top)
+                         coordinate (-top right rear)
+                         coordinate (-top rear right)
+                         coordinate (-rear top right)
+                         coordinate (-rear right top);
+       \path (#1,0,-#3) coordinate (-right bottom rear)
+                        coordinate (-right rear bottom)
+                        coordinate (-bottom right rear)
+                        coordinate (-bottom rear right)
+                        coordinate (-rear bottom right)
+                        coordinate (-rear right bottom);
+       \path (#1,0,0) coordinate (-right bottom front)
+                      coordinate (-right front bottom)
+                      coordinate (-bottom right front)
+                      coordinate (-bottom front right)
+                      coordinate (-front bottom right)
+                      coordinate (-front right bottom);
+       % centers of the 6 faces
+       \coordinate (-left center) at (0,.5*#2,-.5*#3);
+       \coordinate (-right center) at (#1,.5*#2,-.5*#3);
+       \coordinate (-top center) at (.5*#1,#2,-.5*#3);
+       \coordinate (-bottom center) at (.5*#1,0,-.5*#3);
+       \coordinate (-front center) at (.5*#1,.5*#2,0);
+       \coordinate (-rear center) at (.5*#1,.5*#2,-#3);
+       % center of the cuboid
+       \coordinate (-center) at (.5*#1,.5*#2,-.5*#3);
+       % centers of the 12 edges
+       \path (0,#2,-.5*#3) coordinate (-left top center) 
+                           coordinate (-top left center);
+       \path (.5*#1,#2,-#3) coordinate (-top rear center)
+                            coordinate (-rear top center);
+       \path (#1,#2,-.5*#3) coordinate (-right top center)
+                            coordinate (-top right center);
+       \path (.5*#1,#2,0) coordinate (-top front center)
+                          coordinate (-front top center);
+       \path (0,0,-.5*#3) coordinate (-left bottom center) 
+                           coordinate (-bottom left center);
+       \path (.5*#1,0,-#3) coordinate (-bottom rear center)
+                            coordinate (-rear bottom center);
+       \path (#1,0,-.5*#3) coordinate (-right bottom center)
+                            coordinate (-bottom right center);
+       \path (.5*#1,0,0) coordinate (-bottom front center)
+                          coordinate (-front bottom center);
+       \path (0,.5*#2,0) coordinate (-left front center) 
+                           coordinate (-front left center);
+       \path (0,.5*#2,-#3) coordinate (-left rear center)
+                            coordinate (-rear left center);
+       \path (#1,.5*#2,0) coordinate (-right front center)
+                            coordinate (-front right center);
+       \path (#1,.5*#2,-#3) coordinate (-right rear center)
+                          coordinate (-rear right center);
+    \end{scope}
+}
+
+\tikzset{
+  pics/cuboid/.style = {
+    setup code = \tikz@lib@cuboid@setup,
+    background code = \tikz@lib@cuboid@draw#1\pgf@stop
+  },
+  pics/cuboid/.default={1--1--1},
+  cuboid/.is family,
+  cuboid,
+  all faces/.style={fill=white},
+  all grids/.style={draw=none},
+  front face/.style={},
+  front grid/.style={},
+  right face/.style={},
+  right grid/.style={},
+  top face/.style={},
+  top grid/.style={},
+  edges/.style={},
+  hidden edges/.style={draw=none},
+  xangle/.initial=0,
+  yangle/.initial=90,
+  zangle/.initial=210,
+  xscale/.initial=1,
+  yscale/.initial=1,
+  zscale/.initial=0.5
+}
+
+\newcommand{\tikzcuboidreset}{
+\tikzset{cuboid,
+  all faces/.style={fill=white},
+  all grids/.style={draw=none},
+  front face/.style={},
+  front grid/.style={},
+  right face/.style={},
+  right grid/.style={},
+  top face/.style={},
+  top grid/.style={},
+  edges/.style={},
+  hidden edges/.style={draw=none},
+  xangle=0,
+  yangle=90,
+  zangle=210,
+  xscale=1,
+  yscale=1,
+  zscale=0.5
+}
+}
+
+\newcommand{\tikzcuboidset}{\@ifstar\tikzcuboidset@star\tikzcuboidset@nostar} 
+\newcommand{\tikzcuboidset@nostar}[1]{\tikzcuboidreset\tikzset{cuboid,#1}}
+\newcommand{\tikzcuboidset@star}[1]{\tikzset{cuboid,#1}}
+\makeatother
+

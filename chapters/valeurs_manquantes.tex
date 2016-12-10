@@ -1,0 +1,98 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = LuaLaTeX
+% !TEX root = ../memoire.tex
+% !TEX spellcheck = fr-FR
+
+%************************************************
+\chapter{Prise en compte des valeurs manquantes}
+\label{chap:six}
+%************************************************
+
+Il est courant que les jeux de données réelles comportent un grand nombre de données manquantes, cela peut être dû à une absence d'information pour l'individu concerné, à une erreur causée par une entrée manuelle des données ou d'autres processus comme la corruption des données. A priori, une observation dont il manque certaines valeurs n'est pas utilisable et doit être ignorée lors de la création du modèle, ainsi les données éventuellement déjà peu nombreuses se trouvent être encore plus réduites et la performance du modèle diminue. Il semble légitime de vouloir quand même utiliser les valeurs non manquantes de l'observation pour améliorer les performances sans trop les diminuer en traitant la ou les valeurs manquantes. Il est possible de modifier l'algorithme d'apprentissage pour directement prendre en compte les valeurs manquantes, par exemple dans le cas des arbres en propageant les valeurs manquantes dans les deux fils à la fois ou en utilisant un arbre ternaire, l'un des trois fils récupérant les valeurs manquantes, néanmoins ces techniques restent très spécifiques et ne peuvent pas se généraliser à tous les algorithmes. La procédure standard est alors l'estimation des valeurs manquantes pour se ramener à un échantillon d'apprentissage sans valeurs manquantes sur lequel appliquer nos algorithmes. 
+
+Le problème d'estimation des valeurs manquantes est en lui même un problème d'apprentissage machine, nous allons donc utiliser des techniques d'apprentissage machine standard pour estimer les valeurs manquantes à partir des valeurs que l'on connaît.
+
+\section{Estimation par les $k$-plus proches voisins}\label{distances}
+
+L'une des méthodes les plus simples pour inférer les valeurs manquantes est de les remplacer par une valeur renseignée chez un autre individu \emph{proche}. Pour diminuer le risque d'overfitting il est possible de baser la prédiction sur $k$ individus proches, on se ramène ainsi à un problème d'estimation des $k$-plus proches voisins.
+
+Afin d'appliquer l'algorithme \ac{knn}, il est nécessaire de se munir d'une métrique. On rencontre alors deux problèmes: toutes les variables n'ont pas la même échelle et donc peuvent prendre un poids disproportionné dans le calcul des distances, et les distances courantes ne sont pas adaptées pour les variables qualitatives. Le premier problème est aisément résolu en renormalisant et standardisant chacune des variables, mais le second nécessite la création de mesures spécifiques (voir \citet{Wilson1997}, \citet{Lumijarvi2004} ou \citet{Rodriguez2008}). Puisque nous nous intéressons au cas de la classification binaire, nous allons exploiter les caractéristiques particulières du problème pour obtenir une mesure de similarité plus simple.
+
+À partir de maintenant nous supposons que $\mathcal{Y} = \{0,1\}$ avec $1$ la classe d'intérêt. De la même façon que dans~\ref{subsubsec:coupure_binaire}, on munit les variables qualitatives d'une relation d'ordre $\preceq$, ainsi si $a$ et $b$ sont deux catégories de $X_i$, on a:
+\begin{equation*}
+    a \preceq b \Leftrightarrow \mathbb{P} \left[ Y = 1 \mid X_i = a \right] \leq \mathbb{P} \left[ Y = 1 \mid X_i = b \right]
+\end{equation*}
+
+Maintenant que toutes nos variables sont munies de relations d'ordre totales, on pose
+\begin{equation*}
+    x \rightarrow F_i(x) :=  \begin{cases}
+        \mathbb{P} \left[ X_i \leq x \mid Y_i = 1 \right] \text{si } X_i \text{ quantitative} \\
+        \mathbb{P} \left[ X_i \preceq x \mid Y_i = 1 \right] \text{si } X_i \text{ qualitative}
+    \end{cases}
+\end{equation*}
+
+La mesure de similarité est alors, avec $x^1 = (x^1_1,\dotsc,x^1_M)$, $x^2 = (x^2_1,\dotsc,x^2_M)$, $\lambda \in [0,1]$ et $q>0$:
+\begin{equation*}
+    d(x^1,x^2) = \left( \sum_{i=1}^M \left( \lambda + \mathds{1}_{\substack{x^1_i \neq \mathrm{NA} \\ x^2_i \neq \mathrm{NA}}} ( \vert F_i (x^1_i) - F_i (x^2_i) \vert - \lambda )  \right)^q \right)^{\frac{1}{q}}
+\end{equation*}
+
+Ici $\lambda$ est une pénalisation des valeurs manquantes afin d'accorder plus d'importances aux individus sans valeurs manquantes. De plus la transformation par $F_i$ donne une standardisation efficace puisque tous nos nouveaux points sont distribués identiquement uniformément sur $[0,1]$.
+
+Enfin si $x^1$ possède $x^1_j$ comme valeur manquante on choisit comme estimation
+\begin{equation*}
+    m(x^1_j,d,k) = \operatorname{médiane}\left( \left[ \argmin_{ \substack{x^2 \in \text{k-NN}(x^1) \\ x^2 \in \mathcal{L}}} d(x^1,x^2) \right]_j \right)
+\end{equation*}
+
+\todo{résultats numériques}
+
+\section{Estimation par prédictions répétées}
+\subsection{Méthode de Breiman}
+
+Les forêts aléatoires peuvent fournir une mesure de similarité. En effet il est possible de voir un arbre comme une fonction indicatrice qui à chaque individu leur attribue une feuille. Ainsi du point de vue d'un arbre deux individus tombant dans la même feuille sont similaires, il est alors possible de moyenner la décision \emph{similaire} / \emph{dissimilaire} sur l'ensemble des arbres de la forêt pour obtenir une mesure de similarité.
+\begin{equation*}
+    \mathrm{similarité} ( x_1 , x_2 ) = \frac{1}{M} \sum_{m=1}^M \sum_{t \in \tilde{\varphi}_{\mathcal{L},m}} \mathds{1}_{x_1,x_2 \in \mathcal{X}_t}
+\end{equation*}
+avec $\tilde{\varphi}_{\mathcal{L},m}$ l'ensemble des feuilles de l'arbre $\varphi_{\mathcal{L},m}$. La mesure de similarité est sensible à la taille des feuilles, en effet si l'on autorise les arbres avec des feuilles pures la majorité des individus seront classés comme \emph{dissimilaires}.
+
+L'idée de \citet{Breiman2001} pour traiter les valeurs manquantes repose sur l'utilisation de cette mesure de dissimilarité. Les valeurs manquantes sont tout d'abord remplacées par une estimation naïve et rapide comme la moyenne ou le mode, une forêt est ensuite construite sur cet échantillon et la similarité des individus possédant des valeurs manquantes à tous les autres individus est calculée. Les valeurs manquantes sont alors re-estimées comme étant la moyenne pondérée par les similarité des observations. Cette étape est répétée jusqu'a convergence des valeurs manquantes. Dans le cas des variables qualitatives on peut procéder à un vote pondéré.
+
+\subsection{MissForest}
+
+Bien qu'il soit possible comme précédemment d'utiliser un algorithme spécifique pour l'estimation des valeurs manquantes, nous possédons déjà un algorithme d'apprentissage performant capable d'estimer à la fois les variables qualitatives et quantitatives et s'adaptant à nos données: les forêts aléatoires. Il est ainsi possible de voir le problème d'estimation des valeurs manquantes comme $P$ problèmes d'apprentissage machine avec $P$ le nombre de variables possédant des valeurs manquantes dans l'échantillon d'apprentissage tel que dans la méthode \texttt{MissForest} \citep{Stekhoven2012}. En choisissant la colonne $x_j$ comme cible d'apprentissage et le reste, c'est-à-dire $(y,x_{-j})$ comme observation, on peut alors construire une forêt, s'en servir pour estimer les valeurs manquantes puis passer à la variable suivante. Il s'agit d'une méthode intuitive et simple à mettre en œuvre mais possédant un coût de calcul très élevé.
+
+\begin{algorithm}
+\caption{Algorithme MissForest}
+\begin{algorithmic}
+    \Procedure{MissForest}{$\mathcal{L}$, Critère}
+    \State{Compléter $\mathcal{L}$ naïvement (\ac{knn} par exemple)}
+    \State{K $\gets$ indices des variables triées par ordre croissant de valeurs manquantes}
+    \While{ Critère non rempli }
+        \For{ $k \in K$ }
+            \State{$\mathrm{ForêtAléatoire} ( x^k \sim \left( y, x^{-k} \right) )$}
+            \State{Prédit $x^k_{\text{manquantes}}$ avec $\left(y, x^{-k} \right)_{\text{manquantes}}$}
+            \State{$\mathcal{L}^\text{imp} \gets \mathcal{L}^\text{imp}$ avec $x^k$ mis à jour}
+        \EndFor
+    \EndWhile
+    \State \Return $\mathcal{L}^\text{imp}$
+    \EndProcedure
+\end{algorithmic}    
+\end{algorithm}
+
+Il faut se fixer un critère d'arrêt, les auteurs proposent d'arrêter la procédure lorsque la différence entre les deux jeux de données augmente pour la première fois par rapport non seulement aux variables quantitatives mais aussi qualitatives. Le critère d'arrêt est donc:
+\begin{equation*}
+    \begin{cases}
+        \Delta_\mathcal{M}^k > 0 \\
+        \Delta_\mathcal{Q}^k > 0
+    \end{cases}
+\end{equation*}
+Avec $\mathrm{NA}$ l'ensemble des indices des valeurs manquantes, $\mathcal{M}$ l'ensemble des variables quantitative et $\mathcal{Q}$ les variables qualitatives:
+\begin{align*}
+    \Delta_\mathcal{M}^k &= \frac{\sum_{j \in \mathcal{M} \cap K} \sum_{i \in \mathrm{NA} \cap [1,\dotsc,N]} (x^j_{i,k} - x^j_{i,k-1})^2 }{\sum_{j \in \mathcal{M} \cap K} \sum_{i \in \mathrm{NA} \cap [1,\dotsc,N]} (x^j_{i,k})^2} \\
+    \Delta_\mathcal{Q}^k &= \frac{\sum_{j \in \mathcal{Q} \cap K} \sum_{i \in \mathrm{NA} \cap [1,\dotsc,N]} \mathds{1}_{x^j_{i,k} \neq x^j_{i,k-1}} }{\vert \mathrm{NA} \vert}
+\end{align*}
+
+\section{Modification algorithmique}
+
+Au lieu de chercher à estimer les valeurs manquantes, il est possible de modifier les algorithmes d'apprentissage en eux-mêmes pour prendre en compte les valeurs manquantes.
+La première méthode consiste à considérer les valeurs manquantes comme un type de valeur contenant de l'information. Il existe en effet un grand nombre de cas dans lesquels le fait que la variable soit non renseignée est informative; en détection des fraudes sur internet on peut par exemple considérer qu'un champ \texttt{Adresse} non renseigné est suspect et donc augmente le risque. Dans cette optique, une modification possible de l'algorithme d'induction d'arbre est d'opter pour des arbres ternaires au lieu de binaire, la nouvelle branche correspondant aux valeurs manquantes. Cette méthode a pour inconvénient de multiplier le nombre de branches et donc en diluant d'une certaine façon l'information d'augmenter le risque de sur-apprentissage.
+Une autre solution est de répercuter les variables manquantes à chaque nœud: les observations manquantes sont copiées dans les deux nœuds fils et l'algorithme continue. L'inconvénient de cette méthode étant qu'un même individu sera présent dans plusieurs feuilles à la fois. La représentation de l'arbre comme partition binaire récursive n'est plus alors valide et la probabilité empirique donnée par les feuilles plus explicitement interprétable.

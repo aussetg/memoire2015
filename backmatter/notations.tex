@@ -1,0 +1,105 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = LuaLaTeX
+% !TEX root = ../memoire.tex
+% !TEX spellcheck = fr-FR
+
+%*******************************************************
+% Declaration
+%*******************************************************
+\cleardoublepage
+\manualmark
+\phantomsection
+\addcontentsline{toc}{chapter}{\tocEntry{Notations}}
+\chapter*{Notations\markboth{\spacedlowsmallcaps{Notations}}{\spacedlowsmallcaps{Notations}}}
+
+\begin{tabularx}{\textwidth}{ l X }
+%$\mathcal{A}$ & Un algorithme d'apprentissage   \\
+%$\mathcal{A}(\theta, \mathcal{L})$ & Le modèle $\varphi_\mathcal{L}$ produit par l'algorithme $\mathcal{A}$ sur $\mathcal{L}$ et d'hyper-paramètres $\theta$   \\
+$b_l$ & La $l^{\text{ième}}$ valeur d'une variable catégorielle  \\
+$\mathrm{BN}(n,q)$ & Loi binomiale négative avec $n$ le nombre d'échecs et $q$ la probabilité d'échec.  \\
+%$B$ & Un sous-ensemble $B \subseteq V$ de variables   \\
+$c_k$ & La $k^\text{ième}$ classe \\
+$\mathbb{E}$ & Espérance  \\
+$\overline{E}(\varphi_\mathcal{L}, \mathcal{L}^\prime)$ & L'erreur de prédiction moyenne $\varphi_\mathcal{L}$ sur $\mathcal{L}^\prime$   \\
+$Err(\varphi_\mathcal{L})$ & L'erreur de généralisation de $\varphi_\mathcal{L}$   \\
+$H(X)$ & L'entropie de Shannon de $X$   \\
+$H(X|Y)$ & L'entropie de Shannon de $X$ conditionnellement à $Y$  \\
+$\mathcal{H}$ & L'espace des modèles candidats, le dictionnaire   \\
+$i(t)$ & Impureté du nœud $t$   \\
+$i_R(t)$ & Impureté du nœud $t$ basée sur l'estimation locale de l'erreur de rebalancement  \\
+$i_H(t)$ & L'impureté issue de l'entropie du nœud $t$   \\
+$i_G(t)$ & L'impureté de Gini du nœud $t$   \\
+$\Delta i(s, t)$ & La diminution d'impureté due à la coupe $s$ au nœud $t$   \\
+$I(X;Y)$ & L'information mutelle entre $X$ et $Y$   \\
+$\text{Imp}(X_j)$ & L'importance de la variable $X_j$  \\
+$J$ & Le nombre de classes   \\
+$K$ & Nombre de strates dans la validation croisée    \\
+$K(\mathbf{x}_i, \mathbf{x}_j)$ & Le noyau de $\mathbf{x}_i$ et $\mathbf{x}_j$  \\
+$L$ & Une fonction de perte   \\
+$\mathcal{L}$ & Un échantillon d'apprentissage $(\mathbf{X}, \mathbf{y})$   \\
+$\mathcal{L}_i$ & La $i^\text{ième}$ strate de $\mathcal{L}$ lors de la validation croisée   \\
+$\mathcal{L}_{-i}$ & $\mathcal{L} \smallsetminus \mathcal{L}_i$   \\
+$\mathcal{L}^m$ & Le $m^\text{ième}$ échantillon bootstrap issu de $\mathcal{L}$   \\
+$\mathcal{L}_t$ & Le sous-échantillon d'observations présent au nœud $t$   \\
+$M$ & Le nombre de modèles dans l'ensemble   \\
+$\mu_{\mathcal{L},\theta_m}(\mathbf{x})$ & La prédiction moyenne en $X = \mathbf{x}$ de $\varphi_{\mathcal{L},\theta_m}$   \\
+$N$ & Le nombre d'observations dans $\mathcal{L}$   \\
+$N_t$ & Le nombre d'observations présentes au nœud $t$   \\
+$N_{ct}$ & Le nombre d'observations de classe $c$ au nœud $t$   \\
+$\Omega$ & L'univers des observations   \\
+$p$ & Le nombre de variables des observations de $\mathcal{L}$   \\
+$p_L$ & La proportion des échantillons du nœud allant dans $t_L$   \\
+$p_R$ & La proportion des échantillons du nœud allant dans $t_R$   \\
+$p(t)$ & L'estimation de la probabilité $p(X \in \mathcal{X}_t)=\tfrac{N_t}{N}$   \\
+$p(c|t)$ & L'estimation empirique de la probabilité $p(Y=c | X \in \mathcal{X}_t)=\tfrac{N_{ct}}{N_t}$ de classe $c$ au nœud $t$   \\
+$\widehat{p}_\mathcal{L}$ & L'estimation empirique à partir de l'échantillon $\mathcal{L}$ de la probabilité   \\
+$P(X,Y)$ & La loi jointe de $X=(X_1,\dots,X_p)$ et $Y$   \\
+$\mathcal{P}_k(V)$ & L'ensemble des parties de $V$ de taille $k$   \\
+$\varphi$ & Un classifieur ou une fonction $\mathcal{X} \mapsto \mathcal{Y}$   \\
+$\widetilde{\varphi}$ & L'ensemble des feuilles de $\varphi$   \\
+$\varphi(\mathbf{x})$ & La prédiction de $\varphi$ en $\mathbf{x}$   \\
+$\varphi_\mathcal{L}$ & Un classifieur construit à partir de $\mathcal{L}$   \\
+$\varphi_{\mathcal{L},\theta}$ & Un classifieur construit à partir de $\mathcal{L}$ avec graine aléatoire $\theta$   \\
+$\varphi_B$ & Le classifieur optimal de Bayes   \\
+$\psi_{\mathcal{L},\theta_1,\dots,\theta_M}$ & Un ensemble de $M$ modèles construits à partir de $\mathcal{L}$ et graine $\theta_1, \dots, \theta_M$   \\
+$\mathcal{Q}$ & Un ensemble $\mathcal{Q} \subseteq \mathcal{S}$ de coupures d'une certaine structure  \\
+$\mathcal{Q}(X_j)$ & L'ensemble $\mathcal{Q}(X_j) \subseteq \mathcal{Q}$ des coupures univariées définies sur $X_j$  \\
+$\rho(\mathbf{x})$ & Le coefficient de corrélation entre les prédiction en $X=\mathbf{x}$ de deux modèles aléatoires   \\
+$s$ & Une coupure   \\
+$s^*$ & La coupure optimale   \\
+$s^*_j$ & La coupure optimale par rapport à $X_j$  \\
+$s_j^v$ & La coupure optimale $(\{\mathbf{x}|x_j \leq v\}, \{\mathbf{x} > v\})$ définie sur $X_j$ avec seuil de discrétisation $v$   \\
+$s_t$ & La coupure du nœud $t$   \\
+$\tilde{s}^j_t$ & La coupure suppléante optimale $s_t$ par rapport à $X_j$  \\
+$\mathcal{S}$ & L'ensemble des coupures $s$ possibles   \\
+$\sigma^2_{\mathcal{L},\theta_m}(\mathbf{x})$ & La variance de la prédiction en $X = \mathbf{x}$ of $\varphi_{\mathcal{L},\theta_m}$   \\
+$t$ & Un nœud d'un arbre   \\
+$t_L$ & Fils gauche du nœud $t$  \\
+$t_R$ & Fils droit du nœud $t$  \\
+$\theta$ & Un vecteur d'hyper-paramètres   \\
+$\theta^*$ & Le vecteur d'hyper-paramètres optimal   \\
+$\widehat{\theta}^*$ & The approximately optimal hyper-parameters   \\
+$\theta_m$ & La graine du $m^\text{ième}$ modèle d'un ensemble   \\
+$v$ & Seuil de discrétisation d'une coupure binaire   \\
+$v_k$ & La $k^\text{ième}$ valeur d'une variable ordonnée, lorsque l'échantillon est ordonné croissant   \\
+$v_k^\prime$ & Le point de coupe médian entre $v_k$ et $v_{k+1}$   \\
+$V$ & L'ensemble $\{X_1, \dots, X_p\}$ des variables de $\mathcal{L}$   \\
+$V^{-j}$ & $V \smallsetminus \{X_j\}$   \\
+$\mathbb{V}$ & Variance  \\
+$\mathbf{w}$ & Vecteur des poids de l'hyperplan de séparation  \\
+$\mathbf{x}$ & Un individu, une observation $(x_1, \dots, x_p)$   \\
+$\mathbf{x}_i$ & Le $i^\text{ième}$ individu de $\mathcal{L}$   \\
+$x_j$ & La valeur de la variable $X_j$ pour l'individu $\mathbf{x}$   \\
+$\mathbf{X}$ & La matrice $N\times p$ représentant les valeurs des $N$ individus pour chacune des $p$ variables   \\
+$X_j$ & La $j^\text{ième}$ variable   \\
+$X$ & Le vecteur aléatoire $(X_1,\dots,X_p)$   \\
+$\mathcal{X}_j$ & L'espace de la variable $X_j$   \\
+$\mathcal{X}$ & L'espace des variables $\mathcal{X}_1 \times \dots \times \mathcal{X}_p$   \\
+$\mathcal{X}_t$ & Le sous-espace $\mathcal{X}_t \subseteq \mathcal{X}$ représenté par le nœud $t$   \\
+$y$ & Valeur de l'observation de sortie $Y$   \\
+$\widehat{y}_t$ & L'étiquette du nœud $t$   \\
+$\widehat{y}_t^*$ & L'étiquette optimale du nœud $t$   \\
+$\mathbf{y}$ & Les valeurs de sorties $(y_1,\dots,y_N)$   \\
+$Y$ & La variable de réponse   \\
+$\mathcal{Y}$ & L'espace de la variable $Y$   \\
+\end{tabularx}

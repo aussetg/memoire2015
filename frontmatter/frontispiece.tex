@@ -1,0 +1,40 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = lualatex
+% !TEX root = ../arsclassica.tex
+% !TEX spellcheck = fr-FR
+
+%*******************************************************
+% Frontispiece
+%*******************************************************
+\begin{frontespizio}
+	\Preambolo{
+	    \PassOptionsToPackage{protrusion=true,final}{microtype}
+        \usepackage{fontspec}
+        \usepackage{microtype}
+        \usepackage{polyglossia}
+        \setdefaultlanguage{french}
+        \usepackage{unicode-math}
+		\setmainfont{TeX Gyre Pagella}
+        \setsansfont{Iwona}
+        \setmathfont{TeX Gyre Pagella Math}
+        \setmathfont[range=it->up]{Neo Euler}
+        \renewrobustcmd{\textls}[2][100]{%
+            {\addfontfeature{LetterSpace=\number\numexpr#1/10\relax}#2}%
+            }
+		\input{info}
+	}
+
+	\Istituzione{\myuni{}}
+	%\Logo[0.5cm]{images/ca-grayscale}
+	\Divisione{\myfaculty{}}
+	\Scuola{\mycourse{}}
+	\Piede{\myaa{}}
+	\Titolo{\mytitle{}}
+	\Sottotitolo{\mysubtitle{}}
+	\NCandidato{Étudiant}{}
+	\Candidato{\myname{}}
+	\NRelatore{Professeur}{}
+	\Relatore{\myprof{}}
+	\NCorrelatore{Encadrant}{}
+	\Correlatore{\mycorrelator{}}
+\end{frontespizio}

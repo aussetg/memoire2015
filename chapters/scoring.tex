@@ -1,0 +1,145 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = LuaLaTeX
+% !TEX root = ../memoire.tex
+% !TEX spellcheck = fr-FR
+
+%************************************************
+\chapter{Le scoring}
+\label{chap:un}
+%************************************************
+
+\section{Principes du scoring}
+
+Le scoring est intimement lié à la classification supervisée en apprentissage statistique, nous utiliserons alors les notations standards en machine learning dans cette section.
+
+Le scoring cherche à classifier des individus $X_i \in \mathcal{X}$ en fonction de leurs caractéristiques afin de déterminer leur appartenance à une classe $Y \in \mathcal{Y}$. Il existe en effet toujours une incertitude dans la classification des individus et il est nécessaire de mettre en place une règle simple permettant de discriminer les individus selon les impératifs légaux, financiers ou réglementaires. Un classifieur qui ne donnerait que $0$ ou $1$ dans le cas de la classification binaire est trop contraignant puisqu'il ne permet pas par exemple de mettre en place des règles permettant de cibler plus d'individus $0$ quitte à cibler à tort des individus $1$ (par exemple dans le cas d'une étude marketing ou le diagnostic d'une maladie grave) selon les impératifs financiers ou moraux.
+
+Afin de pouvoir pallier les problèmes précédents, dans le cas de la classification binaire, au lieu de directement classer les individus nous allons chercher à déterminer une variable latente sur laquelle la classification en elle-même pourra se faire par analyse discriminante.
+
+Une fonction de score est alors seulement un classifieur à valeurs dans $\mathbb{R}$, c'est-à-dire une fonction $S : \mathcal{X} \rightarrow \mathbb{R}$. Pour qu'il soit possible de construire une règle de décision sur ce score, il faudrait en théorie avoir la propriété suivante:
+\begin{equation}
+    S(x_1) > S(x_2) \Leftrightarrow \mathbb{P} \left( y_1 = 1 \mid x_1 \right) > \mathbb{P} \left( y_2 = 1 \mid x_2 \right)
+    \label{equ:score.ordoné}
+\end{equation}
+On se donne alors comme règle de décision:
+\begin{equation*}
+    \begin{cases}
+        y = 1 \text{ si } S(x) \geq s \\
+        y = 0 \text{ si } S(x) < s
+    \end{cases}
+\end{equation*}
+ou $s$ est un seuil à fixer selon les impératifs extérieurs.
+
+On dira qu'un score est \emph{bien ordonné} s’il répond au plus près au critère~\ref{equ:score.ordoné}, c'est le critère qui nous intéresse le plus et qui est le moins contraignant puisque toutes les transformations monotones du score nous laissent indifférents dans ce cas. Dans d'autres cas, un autre critère peut être demandé au score:
+\begin{equation*}
+    S(x) = \mathbb{P} \left( y = 1 \mid x \right)
+    \label{equ:score.calibré}
+\end{equation*}
+On dira alors que le score est \emph{bien calibré}.
+
+\section{Performances d'un score}
+
+Il existe un grand nombre de façons de construire des classifieurs et donc des scores. Pouvoir comparer les performances de ces différents classifieurs nécessite alors l'utilisation de mesures de performance adaptées aux spécificités du scoring: le scoring n'étant qu'un cas particulier de la classification binaire il convient de s'intéresser à la mesure de ses performances. Pour cela définissons tout d'abord \ac{tp}, \ac{tn} la quantité d'individus correctement classés dans leurs classes respectives et \ac{fp}, \ac{fn} ceux incorrectement classés.
+
+La mesure de performance du score la plus intuitive et la plus naïve est:
+\begin{equation*}
+    \mathrm{Err} = \frac{\mathrm{FP}+\mathrm{FN}}{\mathrm{TP}+\mathrm{FN}+\mathrm{FP}+\mathrm{TN}}
+\end{equation*}
+
+Néanmoins cette mesure présente un énorme défaut dans notre cas puisqu'elle est inadaptée à la classification dans le cas ou les classes ne sont pas présentes de façon équilibrée. En effet si seulement $1$\% de notre population appartient à la classe positive alors le classifieur attribuant toujours la classe négative à toute observation obtiendra un excellent taux d'erreur de $1$\% alors que la classe positive, qui de plus est souvent la classe qui nous intéresse et donc celle qu'il est le plus important de reconnaître, aura un taux d'erreur de $100$\%.
+
+Une correction rapide de ce phénomène est possible en utilisant le taux d'erreur pondéré:
+\begin{equation*}
+    \beta \frac{\mathrm{FP}}{\mathrm{TN}+\mathrm{FP}} + (1-\beta) \frac{\mathrm{FN}}{\mathrm{TP}+\mathrm{FN}}
+\end{equation*}
+On prend souvent $\beta = 0.5$ ce qui implicitement revient à attribuer les mêmes coûts aux deux classes.
+Il est également possible d'utiliser la moyenne géométrique pour éviter les problèmes du taux d'erreur classique:
+\begin{equation*}
+    \sqrt{\frac{\mathrm{FP}}{\mathrm{TN}+\mathrm{FP}} * \frac{\mathrm{FN}}{\mathrm{TP}+\mathrm{FN}}}
+\end{equation*}
+
+Dans le cas du scoring il est plus courant de mesurer la performance plutôt que l'erreur, on introduit alors
+\begin{gather*}
+    \mathrm{Precision} = \frac{\mathrm{TP}}{\mathrm{TP} + \mathrm{FP}} \\
+    \mathrm{Recall} = \frac{\mathrm{TP}}{\mathrm{TP} + \mathrm{FN}} \\
+    \mathrm{F-mesure} = \frac{2 \times \mathrm{Precision} \times \mathrm{Recall}}{\mathrm{Precision} + \mathrm{Recall}}
+\end{gather*}
+
+Néanmoins aucune de ces mesures ne prend en compte les particularités du scoring c'est-à-dire la nécessité de choisir un seuil sur le score pour répondre à un impératif industriel de détection d'une population minoritaire.
+Les outils les plus utilisés et ceux que nous retiendrons sont alors la courbe \ac{roc} et l'\ac{auc}. La courbe \ac{roc} est la courbe du taux de vrais positifs $\frac{\mathrm{TP}}{\mathrm{TN}+\mathrm{FP}}$ par rapport au taux de faux positifs $\frac{\mathrm{FP}}{\mathrm{TN}+\mathrm{FP}}$ et représente le compromis à effectuer lors du choix du seuil de score, il s'agit donc d'une mesure tout à fait adaptée au problème du scoring. La courbe n'est de plus pas sensible au déséquilibre des classes.
+
+Si l'on note $t$ le seuil de décision et $T$ la sortie de notre classifieur, on a $\mathbb{P} ( T > t \mid Y = 1 ) \simeq \frac{\mathrm{TP} (t) }{\mathrm{TP} (t) + \mathrm{FN} (t) } $ et de la même façon $\mathbb{P} ( T > t \mid Y = 0 ) \simeq \frac{\mathrm{FP} (t)}{\mathrm{TN} (t) +\mathrm{FP} (t)} $. La courbe \ac{roc} est alors la courbe paramétrée:
+\begin{equation*}
+    \mathrm{ROC} (t) = \begin{bmatrix}
+        \mathbb{P} ( T > t \mid Y = 0 ) \\
+        \mathbb{P} ( T > t \mid Y = 1 )
+    \end{bmatrix}
+\end{equation*}
+Sous cette forme l'\ac{auc} se calcule comme:
+\begin{align*}
+    \mathrm{AUC} &=  - \int_0^1 \mathbb{P} ( T > t \mid Y = 1 ) \mathbb{P}' ( T > t \mid Y = 0 ) \diff t \\
+    &= \int_0^1 \mathbb{P} ( T > t \mid Y = 1 ) p ( t \mid Y = 0 ) \diff t
+\end{align*}
+
+\marginpar{En théorie tous les points de l'enveloppe convexe sont des points $\mathrm{ROC}$ admissibles, en réalité le classifieur dont dispose le statisticien ne peut atteindre qu'un nombre fini de valeurs d'ou la forme en escalier.}
+
+\begin{figure}[htbp]
+\centering
+    \begin{tikzpicture}
+    \begin{axis}[domain=0:1, ymin=0, ymax = 1, enlargelimits = false, xlabel = {Taux de faux positifs}, ylabel = {Taux de vrais positifs}, legend style={draw=none}]
+            \addplot[no markers, const plot, blue, fill=blue!10] table [x = "fpr", y = "tpr", col sep = comma] {images/roc_rf.csv} \closedcycle ;
+            \node[blue] at (axis cs:0.8,0.1) {$\mathrm{AUC} = 0.805$};
+            \addplot[no markers, black, dashed] {x}
+                [yshift=8pt] node[pos=0.5,rotate=40] {\tiny{Modèle aléatoire}} ;
+            \addplot[no markers, black, dashed] {x}
+                [yshift=-8pt] node[pos=0.54,rotate=40] {\tiny{$\mathrm{AUC} = 0.5$}};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Courbe ROC et AUC.}
+\end{figure}
+
+On obtient alors une interprétation de l'\ac{auc} qui explique tout son intérêt dans le cas du scoring:
+\begin{align*}
+    \mathbb{P} ( T^i > T^j \mid Y^i = 1 , Y^j = 0 ) &= \iint_{ \{ (t^i,t^j) : t^i > t^j) \} } p(t^i,t^j \mid Y^i = 1 , Y^j = 0 ) \diff t^i \diff t^j \\
+    &= \int_0^1 \left( \int_{t^j}^1 p(t^i \mid Y^i = 1 ) \diff t^i  \right) p(t^j \mid Y^j = 0 ) \diff t^j \\
+    &= \int_0^1 \mathbb{P} ( T > t \mid Y = 1 ) p(t^j \mid Y^j = 0 ) \diff t^j \\
+    &= \mathrm{AUC}
+\end{align*}
+
+L'\ac{auc} est donc la capacité du classifieur à bien classer les individus, il s'agit exactement de ce que l'on souhaite mesurer pour classer les performances d'un algorithme de scoring. L'\ac{auc} permet alors de caractériser à quel point un classifieur est bien ordonné, il reste alors à vérifier si notre fonction score est bien calibrée dans le cas où l'on cherche à prédire des probabilités.
+
+On introduit alors une \emph{règle de scoring}, $R$, qui va mesurer la calibration en récompensant les prédictions de probabilité qui correspondent à la vraie probabilité. $R (p, y)$ est une fonction de la prédiction et de la réalisation de l'événement telle que le classifieur soit récompensé pour une bonne prédiction. On peut affiner cette définition en définissant une règle de scoring \emph{propre} qui donne la récompense maximale lorsque les probabilités prédites correspondent exactement aux probabilités réelles.
+\begin{definition}[Régle de scoring propre]
+    Une régle de scoring
+    \begin{equation*}
+        R : [0,1]^J \times \mathcal{Y} \rightarrow \mathbb{R}
+    \end{equation*}
+    est dite propre si et seulement si
+    \begin{equation*}
+        \left( \mathbb{P}(c_1),\dotsc,\mathbb{P}(c_J)\right) = \argmax_p \mathbb{E}_Y \left[ R(p,y) \right]
+    \end{equation*}
+\end{definition}
+
+Parmi les règles de scoring propres les plus utilisées, on peut citer:
+\begin{description}
+    \item[Règle logarithmique] \begin{equation*}
+        R(p,y) = \log ( p_{i_y} )
+    \end{equation*}
+    \item[Règle quadratique de Brier] \begin{equation*}
+        R(p,y) = 2 p_{i_y} - \Vert p \Vert_2
+    \end{equation*}
+    \item[Règle sphérique] \begin{equation*}
+        R(p,y) = \frac{p_{i_y}}{\Vert p \Vert_2}
+    \end{equation*}
+\end{description}
+où $i_y$ est l'indice de la classe de $y$.
+
+
+Le choix du seuil ayant lieu après la sélection du modèle il convient alors de créer une mesure de performance basée sur la courbe \ac{roc} qui prend en compte tous les seuils possibles, on utilise alors l'aire sous la courbe \ac{roc} ou \ac{auc}.
+
+Une fois le seuil choisi l'\ac{auc} ou la courbe \ac{roc} n'ont plus aucun sens, il faut donc une métrique robuste aux déséquilibres. Dans le cas de la classification binaire il est possible d'utiliser le \ac{mcc} qui est une mesure de la corrélation entre les vraies valeurs et les valeurs prédites.
+\begin{equation*}
+    \mathrm{MCC} = \frac{\mathrm{TP}\times\mathrm{TN} - \mathrm{FP}\times\mathrm{FN}}{\sqrt{ (\mathrm{TP}+\mathrm{FP}) ( \mathrm{TP} + \mathrm{FN} ) ( \mathrm{TN} + \mathrm{FP} ) ( \mathrm{TN} + \mathrm{FN}) }}
+\end{equation*}
+
+\todo{Montrer que c'est un coeff de corrélation}

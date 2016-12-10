@@ -1,0 +1,33 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = LuaLaTeX
+% !TEX root = ../memoire.tex
+% !TEX spellcheck = fr-FR
+
+%*******************************************************
+% Introduction
+%*******************************************************
+\cleardoublepage
+\pdfbookmark{Introduction}{Introduction}
+\chapter*{Introduction}\label{chap:intro}
+
+Au moment de prendre la décision d'accorder ou non un crédit à un client, le conseiller doit prendre en compte ce qu’il sait sur le client pour inférer si celui-ci va faire défaut ou non. Il n’est bien sûr pas possible d’effectuer ce choix avec une totale certitude, le conseiller va alors chercher à construire un score représentant d’une façon abstraite la certitude qu’il possède que celui-ci fasse faillite ou non et refusera ou acceptera le crédit au-dessus d’un certain seuil fixé à l’avance.Avec l’augmentation colossale et constante de la quantité de données disponible ainsi que l’évolution des capacités de calculs disponibles est apparue la nécessité de développer de nouvelles méthodes statistiques pour les exploiter. La grande quantité d’observations disponibles permet l’utilisation de techniques d’apprentissage statistique non paramétriques plus coûteuses et moins puissantes que les tests statistiques classiques plus contraignants par leurs hypothèses. Ainsi de nombreux types de classifieurs ont vu le jour et les efforts pour améliorer leur précision est le centre même de cette nouvelle branche des statistiques couramment appelée Machine Learning. Les arbres de décision, sous leurs multiples formes, sont grâce à leur simplicité à la base de nombreux algorithmes, mais leurs performances seules sont assez limitées. Il est alors possible de grouper plusieurs arbres pour obtenir de meilleures performances. Cette technique, qui s’applique à n’importe quel classifieur, fera alors ici l’objet d’un exposé plus détaillé à travers l’étude des principales méthodes ensemblistes.
+Dans ce mémoire nous exposerons certains exemples de la littérature sur les méthodes ensemblistes pour les arbres puis testerons leurs performances sur deux bases de données réelles représentatives des problématiques du scoring. Nous rappellerons dans un premier temps le cadre théorique ainsi que les différentes techniques classiques qui seront utilisées. Puis, puisque pour juger de l’efficacité de nos méthodes sur les données il convient d’utiliser des métriques de performances qui représentent bien ce que l’on cherche à obtenir, nous verrons alors diverses façons de mesurer la qualité d’un classifieur en fonction des critères retenus.Nous développerons ensuite différentes méthodes de rééquilibrage, soit sur les données elles-mêmes soit par une modification judicieuse de l’algorithme d’apprentissage afin de pallier le problème que présente le déséquilibre des classes dans le cas du scoring. La classe intéressante étant en réalité la classe minoritaire, de telles méthodes sont indispensables.
+Enfin nous aborderons rapidement la question des données manquantes et comment les incorporer au modèle.
+
+\begin{description}
+\item[{\hyperref[chap:un]{Le premier chapitre}}]
+fait office de rapide introduction au scoring et traite du choix de la mesure des performances.
+\item[{\hyperref[chap:deux]{Le deuxième chapitre}}]
+introduit diverses techniques d'apprentissage statistique populaires.
+\item[{\hyperref[chap:trois]{Le troisième chapitre}}]
+explique comment différentes méthodes d'agrégation des classifieurs permettent d'améliorer les résultats.
+\item[{\hyperref[chap:quatre]{Le quatrième chapitre}}]
+introduit les arbres de classification et applique les méthodes vues dans le chapitre précédent .
+\item[{\hyperref[chap:cinq]{Le cinquième chapitre}}]
+explore différentes techniques de rééquilibrage des données.
+\item[{\hyperref[chap:six]{Le sixième chapitre}}]
+traite différentes méthodes pour prendre en compte les valeurs manquantes.
+%\item[{\hyperref[chap:sept]{Le septième chapitre}}]
+%traite de la recherche efficace des hyper-paramètres optimaux.
+\end{description}
+

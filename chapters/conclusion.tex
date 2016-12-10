@@ -1,0 +1,21 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = LuaLaTeX
+% !TEX root = ../memoire.tex
+% !TEX spellcheck = fr-FR
+
+%************************************************
+\chapter{Conclusion}
+\label{chap:conclusion}
+%************************************************
+
+Nous avons vu que les méthodes ensemblistes peuvent améliorer les performances par rapport à un modèle simple, souvent de façon très importante. Il apparaît que les méthodes d'agrégations de nombreux modèles fortement randomisés présentent de très bonnes performances dans le cas des données utilisées (voir tableau~\ref{table:resultats}).
+
+Il est aussi encourageant, bien que surprenant, de voir que les corrections les plus simples pour les données déséquilibrées c'est-à-dire un rééquilibrage par sous-échantillonnage bootstrap semblent être les plus efficaces, en effet non seulement leur implémentation est triviale, mais elles ont pour conséquence secondaire de fortement accélérer les temps de calcul.
+
+Les méthodes de types \emph{stacking} ont montré sur nos données des résultats assez faibles et sont plus coûteuses à mettre en place tout en nécessitant une certaine \textquote{ingénierie} de la part du praticien dans le choix des modèles retenus, algorithmes de stacking et autres paramètres, ce qui augmente grandement la complexité.
+
+Les méthodes bayésiennes ont atteint des performances bien supérieures à celles attendues, et ce sans prendre en compte aucune correction pour le déséquilibre des données. Le principal inconvénient rencontré par les méthodes bayésiennes est le temps de calcul colossal et la mémoire machine nécessaire lors de la construction de la forêt et dans une moindre mesure lors de la prédiction d'une nouvelle observation. Néanmoins il est possible que dans certains cas l'avantage apporté par la connaissance de la densité tout entière et non pas une statistique précise soit assez grand pour justifier le temps de calcul. Il semble donc intéressant de continuer à étudier les méthodes bayésiennes, en ajoutant des a priori adaptés au cas déséquilibré par exemple ou en améliorant les performances des algorithmes afin de rendre leur utilisation possible en grande dimension ou pour des échantillons de grande taille.
+
+Nous précisons que les méthodes de remplacement des données manquantes n'ont amélioré les résultats que de manière anecdotique et leurs résultats ne sont pas présentés, car identiques aux cas sans traitement des données manquantes. Qui plus est, les algorithmes du type MissForest sont bien trop coûteux pour être appliqués sur une base \textquote{normale}. Néanmoins l'application de l'algorithme dans le cas de la classification binaire est simple et rapide et ne semble présenter aucun inconvénient ou dégradations des performances. Il serait donc judicieux de l'appliquer en permanence dans les cas où l'échantillon possède peu d'individus.
+
+Enfin il semble important de concentrer les efforts futurs sur les méthodes de \emph{ranking}, et l'optimisation directe de métriques telles que l'\ac{auc}. En effet la plupart des algorithmes classiques optimisent d'une façon ou d'une autre la perte 0-1 qui n'est pas celle qui est dans notre cas d'intérêt, il semble donc logique d'optimiser le critère que l'on mesure. Qui plus est, bien qu'il semble que les gains en \ac{auc} se fassent souvent au détriment du score propre (Brier par exemple), les deux ne sont pas liés et il est possible de d'abord optimiser l'\ac{auc} puis calibrer les probabilités estimées puisqu'une transformation monotone ne modifie pas l'\ac{auc}.

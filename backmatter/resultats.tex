@@ -1,0 +1,72 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = LuaLaTeX
+% !TEX root = ../memoire.tex
+% !TEX spellcheck = fr-FR
+
+%*******************************************************
+% Declaration
+%*******************************************************
+\cleardoublepage
+\phantomsection
+\chapter{Résultats}
+
+Les deux critères retenus pour la mesure des performances sont l'\ac{auc} et le Score de Brier.
+
+Dans le cas de la base A, l'échantillon de validation est un échantillon \textquote{out-of-time}, c'est-à-dire de données acquises après les données d'apprentissage. Dans le cas de la base B, les échantillons d'apprentissage et validation ont été créés en effectuant une coupe aléatoire stratifiée sur la variable $y$ afin de garder le même équilibre dans les deux bases. La coupe a été effectuée dans une proportion de $2/3$ pour l'échantillon d'apprentissage et $1/3$ pour l'échantillon de validation.
+
+La base A est un problème de classification binaire, la variable à prédire étant \texttt{Défaut} ou \texttt{Non Défaut}. La base B est elle aussi un problème de classification binaire, on cherche à prédire si les individus sont \texttt{Appétent} ou \texttt{Non Appétent}. Les caractéristiques globales des bases d'apprentissages sont données dans le tableau~\ref{table:bases}. Les bases de validation possèdent globalement les mêmes caractéristiques.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrrrrr}
+    \toprule
+    & Obs. & NAs & Quantitatives & Qualitatives & \% Positifs \\
+    \midrule
+    Base A & $26906$ & $7834$ & $57$ & $5$ & $2.86$ \\
+    Base B & $18605$ & $0$ & $85$ & $16$ & $2.44$ \\
+    \bottomrule
+    \end{tabular}
+    \caption{Caractéristiques des bases d'apprentissage}\label{table:bases}
+\end{table}
+
+Les bases ne sont que des échantillons de bases de plusieurs millions d'observations. Le choix a été fait de travailler sur des bases de tailles restreintes afin non seulement de pouvoir comparer les résultats avec ceux obtenus par le GRO précédemment, mais aussi afin de rendre l'apprentissage des différents algorithmes possible sur des machines de travail normales, et ce en un temps raisonnable compatible avec le processus d'expérimentation.
+
+\newpage
+
+\vspace*{\fill}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lrrrr}
+    \toprule
+    & \multicolumn{2}{c}{Base A}  & \multicolumn{2}{c}{Base B} \\ 
+    \cmidrule(lr){2-3} \cmidrule(lr){4-5}
+    Classifieur & AUC & Brier\sidenotemark[1] & AUC & Brier \\
+    \midrule
+    Régression logistique & $0.7889$ & $0.0314$ & $0.6727$ & $0.02356$ \\
+    CART & $0.79649$ & $0.03194$ & $0.6542$ & $0.02489$ \\
+    Forêts aléatoires & $0.805$ & $0.02864$ & $0.699$ & $0.02346$ \\
+    Boosting Arbres & $0.8103$ & $0.0295$ & $0.6345$ & $0.0247$ \\
+    %Stacking $\sim$ Linéaire & & & & \\
+    %Stacking $\sim$ Logistique & & & & \\
+    Stacking $\sim$ Réseau de neurones & $0.7372$ & $0.0399$ & $0.6324$ & $0.02477$ \\
+    Balanced RF & $0.843$ & $0.1509$ & $0.7162$ & $0.14497$ \\
+    Weighted RF & $0.8006$ & $0.02861$ & $0.7017$ & $0.02345$ \\
+    Roughly Balanced RF & $0.8432$ & $0.15395$ & $0.7211$ & $0.14597$ \\
+    Nearly Balanced RF & $0.8427$ & $0.1334$ & $0.7235$ & $0.1216$ \\
+    Very Roughly Balanced RF & $0.8421$ & $0.1297$ & $0.7205$ & $0.12123$ \\
+    RF + Metacost & $0.8217$ & $0.2938$ & $0.69787$ & $0.18886$ \\
+    RF + Feuilles SVMs & $0.7664$ & $0.11437$ & $0.5898$ & $0.0246$ \\
+    RF Uniformes & $0.8423$ & $0.0276$ & $0.7053$ & $0.02365$ \\
+    RF Uniformes Equilibrées & $0.84346$ & $0.2152$ & $0.7305$ & $0.2082$ \\
+    ExtRa-Trees\sidenotemark[2] & $0.7786$ & $0.02853$ & $0.6753$ & $0.0251$ \\
+    BART & $0.8365$ & $0.02745$ & $0.7321$ & $0.02328$ \\
+    \bottomrule
+    \end{tabular}
+    \caption{Performances des différentes méthodes sur $2$ bases de validation différentes}\label{table:resultats}
+\end{table}
+
+\vspace*{\fill}
+
+\sidenotetext[1][-16cm]{Dans le cas de Brier il s'agit d'une perte et non d'un score. Donc on souhaite la plus petite valeur possible.}
+\sidenotetext[2][-9cm]{Dans le cas des ExtRa-Trees l'algorithme effectue un $1$-hot dummy encoding, les résultats ne sont donc pas complètement comparables.}
